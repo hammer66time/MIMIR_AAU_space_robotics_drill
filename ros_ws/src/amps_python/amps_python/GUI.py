@@ -11,7 +11,7 @@ class GUI_node(Node):
     def __init__(self):
         super().__init__("GUI_node")
 
-    def runGUI():
+    def runGUI(self):
         # Run the GUI
         window = MainWindow()
         window.runUI() 
@@ -35,5 +35,17 @@ class MainWindow(QWidget):
     def runUI(self):
         self.show()
         self.app.exec()
+
+def main():
+    rclpy.init()
+    node = GUI_node()
+    node.runGUI()
+    # Note: rclpy.spin() would block the GUI, so we don't use it here
+    # The GUI event loop will run instead
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
     
 
