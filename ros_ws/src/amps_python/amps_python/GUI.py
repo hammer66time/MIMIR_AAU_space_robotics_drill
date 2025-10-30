@@ -4,6 +4,17 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 import PyQt6.QtWidgets as QtW
 import sys
+import rclpy
+from rclpy.node import Node
+
+class GUI_node(Node):
+    def __init__(self):
+        super().__init__("GUI_node")
+
+    def runGUI():
+        # Run the GUI
+        window = MainWindow()
+        window.runUI() 
 
 class MainWindow(QWidget):
     app = QApplication(sys.argv)
@@ -25,7 +36,4 @@ class MainWindow(QWidget):
         self.show()
         self.app.exec()
     
-# Run the GUI
 
-window = MainWindow()
-window.runUI() 

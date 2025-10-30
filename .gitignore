@@ -9,11 +9,10 @@ __pycache__/
 # Ignore VSCode settings
 .vscode/
 
-
-
-# Ignore OS files
-.DS_Store
-Thumbs.db
-
 # ignore the whole venv
 .venv
+
+# ignore ros stuff
+build
+install
+log
