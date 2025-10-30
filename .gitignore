@@ -1,0 +1,19 @@
+# Ignore build files
+/build/
+dist/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore VSCode settings
+.vscode/
+
+
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# ignore the whole venv
+.venv
