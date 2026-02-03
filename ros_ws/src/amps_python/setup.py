@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'GUI = amps_python.GUI:main',
+            'gui = amps_python.main:main',
         ],
     },
 )
