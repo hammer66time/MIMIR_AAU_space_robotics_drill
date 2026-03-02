@@ -90,4 +90,4 @@ class MainWindow(QWidget):
 # for testing gui appearance:
 if __name__ == '__main__':
     window = MainWindow()
-    window.runUI() 
+    #window.runUI() 
