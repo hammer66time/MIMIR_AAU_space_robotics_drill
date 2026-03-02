@@ -10,7 +10,12 @@ class NanoComs(Node):
         # Create a publisher on the 'nano' topic
         self.publisher_ = self.create_publisher(String, 'nano', 10)
 
-        #self.subscriptions = self.create_subscription        
+        # Subscribe to GUI commands
+        self.subscription = self.create_subscription(
+            String,
+            'drill_commands',
+            self.command_callback,
+            10)
         
         timer_period = 0.1 # seconds
         self.timer = self.create_timer(timer_period, self.com_callback)
@@ -18,20 +23,44 @@ class NanoComs(Node):
 
         #-----------------------------------------------
         #Serial communication:
-        self.ser = serial.Serial('/dev/ttyUSB0', 115200)
+        try:
+            self.ser = serial.Serial('/dev/ttyUSB0', 115200)
+            self.get_logger().info('Arduino Nano connected successfully')
+        except serial.SerialException as e:
+            self.get_logger().error(f'Failed to connect to Arduino Nano: {e}')
+            self.ser = None
+
+    def command_callback(self, msg):
+        """Handle commands from GUI"""
+        command = msg.data
+        self.get_logger().info(f'Received command: {command}')
+        # Send command to Arduino Nano
+        if self.ser is not None:
+            try:
+                self.ser.write(f'{command}\n'.encode())
+            except serial.SerialException as e:
+                self.get_logger().error(f'Failed to send command: {e}')
+        else:
+            self.get_logger().warning('Cannot send command - Arduino not connected')
 
     def com_callback(self):
-        while True:
-            line = self.ser.readline().decode().strip()
+        if self.ser is None:
+            return
+        
+        try:
+            while True:
+                line = self.ser.readline().decode().strip()
 
-            # eksempel: send kommando
-            self.ser.write(b'LED_ON\n')
-           
-            #---------------------------------------
-            #ROS2 message for publishing
-            msg = String()
-            msg.data = line
-            self.publisher_.publish(msg)
+                # eksempel: send kommando
+                self.ser.write(b'LED_ON\n')
+               
+                #---------------------------------------
+                #ROS2 message for publishing
+                msg = String()
+                msg.data = line
+                self.publisher_.publish(msg)
+        except serial.SerialException as e:
+            self.get_logger().error(f'Serial communication error: {e}')
 
 def main(args=None):
     rclpy.init(args=args) # Initialize the ROS client library
