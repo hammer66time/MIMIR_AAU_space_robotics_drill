@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 #Costum classes:
-import gui
+from amps_python import gui
 
 class GUI_node(Node):
     def __init__(self):

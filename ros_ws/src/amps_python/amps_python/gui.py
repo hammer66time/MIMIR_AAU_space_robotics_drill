@@ -37,19 +37,26 @@ class Buttons(QWidget):
 
         # Connect buttons to functions (slots)
         self.buttonHome.clicked.connect(self.home)
-        self.buttonStart.clicked.connect(self.start)
+        self.buttonAuto.clicked.connect(self.auto)
         
         layout.addWidget(self.buttonHome)
         layout.addWidget(self.buttonAuto)
 
         self.setLayout(layout)
 
-
-        def setFunctionHome(self, function):
-            self.buttonHome.clicked.connect(function)
+    def home(self):
+        """Home button callback"""
+        print("Home button clicked")
     
-        def setFunctionStart(self, function):
-            self.buttonStart.clicked.connect(function)
+    def auto(self):
+        """Auto button callback"""
+        print("Auto button clicked")
+
+    def setFunctionHome(self, function):
+        self.buttonHome.clicked.connect(function)
+
+    def setFunctionAuto(self, function):
+        self.buttonAuto.clicked.connect(function)
 
 
 
