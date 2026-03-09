@@ -24,7 +24,7 @@ class NanoComs(Node):
         #-----------------------------------------------
         #Serial communication:
         try:
-            self.ser = serial.Serial('/dev/ttyUSB0', 115200)
+            self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
             self.get_logger().info('Arduino Nano connected successfully')
         except serial.SerialException as e:
             self.get_logger().error(f'Failed to connect to Arduino Nano: {e}')
@@ -32,12 +32,12 @@ class NanoComs(Node):
 
     def command_callback(self, msg):
         #Handle commands from state machine
-        state = msg.data
-        self.get_logger().warning(f'Received command: {state}')
+        self.state = msg.data
+        #self.get_logger().info(f'Received command: {self.state}')
         # Send command to Arduino Nano
         if self.ser is not None:
             try:
-                self.ser.write(f'{state}\n'.encode())
+                self.ser.write(f'{self.state}\n'.encode())
             except serial.SerialException as e:
                 self.get_logger().error(f'Failed to send command: {e}')
         else:
@@ -48,19 +48,21 @@ class NanoComs(Node):
             return
         
         try:
-            while True:
+            # Check if data is available
+            if self.ser.in_waiting > 0:
                 line = self.ser.readline().decode().strip()
-
-                # eksempel: send kommando
-                self.ser.write(b'LED_ON\n')
-               
-                #---------------------------------------
-                #ROS2 message for publishing
-                msg = String()
-                msg.data = line
-                self.publisher_.publish(msg)
+                
+                if line:  # Only publish if line is not empty
+                    #---------------------------------------
+                    #ROS2 message for publishing
+                    msg = String()
+                    msg.data = line
+                    self.publisher_.publish(msg)
+                    #self.get_logger().info(f'Received from Arduino: {line}')
         except serial.SerialException as e:
             self.get_logger().error(f'Serial communication error: {e}')
+        except UnicodeDecodeError as e:
+            self.get_logger().warning(f'Failed to decode data: {e}')
 
 def main(args=None):
     rclpy.init(args=args) # Initialize the ROS client library
