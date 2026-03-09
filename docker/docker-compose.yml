@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  space_drill:
+    image: space_drill:latest
+    container_name: space_drill
+    stdin_open: true
+    tty: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    # privileged: true  # Uncomment if you need access to all devices
+    command: /bin/bash

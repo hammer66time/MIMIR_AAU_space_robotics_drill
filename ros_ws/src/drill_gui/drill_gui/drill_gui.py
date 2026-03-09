@@ -27,7 +27,6 @@ class GUI_node(Node):
         window.runUI() 
 
 
-j
 def main():
     rclpy.init()
     node = GUI_node()

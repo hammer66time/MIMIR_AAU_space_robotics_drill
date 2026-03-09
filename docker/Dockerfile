@@ -25,6 +25,10 @@ RUN apt update && apt install -y \
 # ============================================
 RUN add-apt-repository universe -y
 
+# ====================================================================================
+# Layer 2: ROS2 installation layer
+# ====================================================================================
+
 # ============================================
 # Step 3: Add ROS2 APT repository
 # ============================================
@@ -55,6 +59,17 @@ RUN apt-get update && apt install -y \
     ros-jazzy-ros-base \
     && rm -rf /var/lib/apt/lists/*
 
+# ====================================================================================
+# Layer 3: Other python packages
+# ====================================================================================
+# ============================================
+# Step 7: Install python packages
+# ============================================
+RUN apt-get update && apt-get install -y \
+    python3-serial \
+    python3-pyqt6 \
+    && rm -rf /var/lib/apt/lists/*
+
 # ============================================
 # Step 7: Setup ROS2 environment for all sessions
 # ============================================
@@ -66,13 +81,13 @@ RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 COPY ros_ws /workspace
 
 # Set working directory to workspace
-WORKDIR /ros_ws
+WORKDIR /workspace
 
 # ============================================
 # Step 9: Build the ROS2 workspace
 # ============================================
-RUN . /opt/ros/jazzy/setup.bash && \
-    colcon build --symlink-install
+RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && \
+    colcon build --symlink-install"
 
 # ============================================
 # Step 10: Source workspace in bashrc
