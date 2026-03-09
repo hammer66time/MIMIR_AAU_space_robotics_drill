@@ -22,8 +22,8 @@ class GUI_node(Node):
         # Run the GUI
         window = gui.MainWindow()
         # Connect buttons to ROS2 publish functions
-        window.Buttons.setFunctionHome(lambda: self.send_command('HOME'))
-        window.Buttons.setFunctionAuto(lambda: self.send_command('AUTO'))
+        window.Buttons.setFunctionHome(lambda: self.send_command('RESET'))
+        window.Buttons.setFunctionAuto(lambda: self.send_command('ESTOP'))
         window.runUI() 
 
 

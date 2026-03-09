@@ -33,7 +33,7 @@ class NanoComs(Node):
     def command_callback(self, msg):
         #Handle commands from state machine
         state = msg.data
-        self.get_logger().info(f'Received command: {state}')
+        self.get_logger().warning(f'Received command: {state}')
         # Send command to Arduino Nano
         if self.ser is not None:
             try:

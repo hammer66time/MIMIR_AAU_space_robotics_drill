@@ -24,33 +24,74 @@ class Drill(Node):
             10)
 
         # State machine
-        self.states = ["IDLE", "DRILL"]
+        self.states = ["IDLE","HOMING", "DRILL", "LIFT", "EMPTY", "WEIGH", "TRANSPORT" , "ERROR"]
         self.machine = Machine(model=self, states=self.states, initial="IDLE")
-        self.machine.add_transition("start", "IDLE", "DRILL")
-        self.machine.add_transition("stop", "DRILL", "IDLE")
+        
+        # Auto transitions (sequential flow)
+        self.machine.add_transitions([
+            ["auto_home", "IDLE", "HOMING"],
+            ["auto_drill", "HOMING", "DRILL"],
+            ["auto_lift", "DRILL", "LIFT"],
+            ["auto_empty", "LIFT", "EMPTY"],
+            ["auto_weigh", "EMPTY", "WEIGH"],
+            ["auto_transport", "WEIGH", "TRANSPORT"],
+            ])
+
+        # Manual transitions (go back home from anywhere, then to target state)
+        self.machine.add_transitions([
+            ["manuel_back", "*", "IDLE"]      # Emergency stop - go back to IDLE
+            ])
+
+        # Error state (accessible from anywhere)
+        self.machine.add_transition("error", "*", "ERROR")
 
     def command_callback(self, msg):
         """Handle commands from GUI"""
         command = msg.data
         self.get_logger().info(f'Received command: {command}')
-        if command == "HOME":
-            self.stop()  # Go back to IDLE
+        if command == "RESET":
+            self.manuel_back()  # Go back to IDLE
+
         elif command == "AUTO":
-            self.start()  # Start drilling
+            self.auto_home()
+
+        elif command == "ESTOP":
+            self.error()
 
     def state_callback(self):
         msg = String()
         if self.state == "IDLE":
              msg.data = "IDLE"
              self.publisher_.publish(msg)
-             #self.get_logger().info('Publishing: "%s"' % msg.data)
 
+        elif self.state == "HOMING":
+            msg.data = "HOMING"
+            self.publisher_.publish(msg)
+        
         elif self.state == "DRILL":
             msg.data = "DRILL"
             self.publisher_.publish(msg)
-            #self.get_logger().info('Publishing: "%s"' % msg.data)
 
+        elif self.state == "LIFT":
+            msg.data = "LIFT"
+            self.publisher_.publish(msg)
 
+        elif self.state == "WEIGH":
+            msg.data = "WEIGH"
+            self.publisher_.publish(msg)
+            
+        elif self.state == "EMPTY":
+            msg.data = "EMPTY"
+            self.publisher_.publish(msg)
+
+        elif self.state == "TRANSPORT":
+            msg.data = "TRANSPORT"
+            self.publisher_.publish(msg)
+
+        elif self.state == "ERROR":
+            msg.data = "ERROR"
+            self.publisher_.publish(msg)
+            
 def main(args=None):
     rclpy.init(args=args) # Initialize the ROS client library
     node = Drill() # Create an instance of the node
