@@ -13,7 +13,7 @@ class NanoComs(Node):
         # Subscribe to GUI commands
         self.subscription = self.create_subscription(
             String,
-            'drill_commands',
+            'state',
             self.command_callback,
             10)
         
@@ -31,13 +31,13 @@ class NanoComs(Node):
             self.ser = None
 
     def command_callback(self, msg):
-        """Handle commands from GUI"""
-        command = msg.data
-        self.get_logger().info(f'Received command: {command}')
+        #Handle commands from state machine
+        state = msg.data
+        self.get_logger().info(f'Received command: {state}')
         # Send command to Arduino Nano
         if self.ser is not None:
             try:
-                self.ser.write(f'{command}\n'.encode())
+                self.ser.write(f'{state}\n'.encode())
             except serial.SerialException as e:
                 self.get_logger().error(f'Failed to send command: {e}')
         else:
