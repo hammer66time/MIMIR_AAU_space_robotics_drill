@@ -1,9 +1,11 @@
-This is for space drill GUI development and maybe ROS communication with an nano
+<p align="center">
+  <img src="images/mimir.png" width="400">
+</p>
 
-This project contains:
+M.I.M.I.R (Modular Instrument for Material Inspection and Research)
 
-docker image for the project:
+MÍMIR is a drilling and soil sampling system developed for AAU Space Robotics.
 
-ROS2 workspace:
+The name is inspired by Mímir from Norse mythology, the guardian of the well of wisdom located beneath the roots of Yggdrasil. According to the myth, Odin sacrificed one of his eyes to gain knowledge from this well.
 
-platformIO for nano code:
+In a similar way, the MÍMIR system is designed to access hidden information beneath the surface. By drilling into the ground and collecting soil samples, the system enables subsurface investigation and scientific analysis. Just as Mímir guarded hidden knowledge, this system helps uncover knowledge buried below the surface.
