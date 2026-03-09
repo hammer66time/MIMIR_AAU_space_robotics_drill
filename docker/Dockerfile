@@ -68,6 +68,7 @@ RUN apt-get update && apt install -y \
 RUN apt-get update && apt-get install -y \
     python3-serial \
     python3-pyqt6 \
+    python3-transitions \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================

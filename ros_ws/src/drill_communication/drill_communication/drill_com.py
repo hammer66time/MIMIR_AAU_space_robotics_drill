@@ -7,7 +7,7 @@ import serial
 class NanoComs(Node):
     def __init__(self):
         super().__init__('nano_communication')
-        # Create a publisher on the 'nano' topic
+        # Create a publisher on the 'nano' topicself.state = "IDLE"
         self.publisher_ = self.create_publisher(String, 'nano', 10)
 
         # Subscribe to GUI commands
