@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <motorController.h> // library for controlling DC motor
 
-bool light = false;
+int duty = 200;
 
 // Opret motor objekt globalt
 MotorController motor(5, 6);
@@ -17,8 +17,8 @@ void setup() {
 }
 
 void loop() {
-
-  motor.setSpeed(200);
+  
+  motor.setSpeed(duty);
 
   // Tjek for kommando
   if (Serial.available() > 0) {
