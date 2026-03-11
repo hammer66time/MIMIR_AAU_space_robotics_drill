@@ -58,7 +58,6 @@ class NanoComs(Node):
                     msg = String()
                     msg.data = line
                     self.publisher_.publish(msg)
-                    #self.get_logger().info(f'Received from Arduino: {line}')
         except serial.SerialException as e:
             self.get_logger().error(f'Serial communication error: {e}')
         except UnicodeDecodeError as e:

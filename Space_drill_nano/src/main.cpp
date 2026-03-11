@@ -3,10 +3,21 @@
 
 bool light = false;
 
+// Opret motor objekt globalt
+MotorController motor(4, 5, 6);
+
 void setup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);  // Start med LED slukket
+
+  // Initialiser motoren
+  motor.begin();
+
+  motor.setDirection(false);
+
+  motor.setSpeed(200);
+
 }
 
 void loop() {
@@ -25,11 +36,10 @@ void loop() {
 
     
     if (cmd == "IDLE") {
-
     }
 
     else if (cmd == "HOMING"){
-
+      motor.setSpeed(200);
     }
 
     else if (cmd == "DRILL"){
@@ -53,7 +63,7 @@ void loop() {
     }
 
     else if (cmd == "ERROR") {
-      
+      motor.stop();
     }
 
   }
