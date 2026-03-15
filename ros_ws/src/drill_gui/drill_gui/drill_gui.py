@@ -1,6 +1,8 @@
+import sys
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from PyQt6.QtWidgets import QApplication
 #Costum classes:
 from drill_gui import gui
 
@@ -16,15 +18,17 @@ class GUI_node(Node):
         msg = String()
         msg.data = command
         self.publisher_.publish(msg)
-        self.get_logger().info(f'Sent command: {command}')
+        #self.get_logger().info(f'Sent command: {command}')
 
     def runGUI(self):
         # Run the GUI
+        app = QApplication(sys.argv)
         window = gui.MainWindow()
         # Connect buttons to ROS2 publish functions
-        window.Buttons.setFunctionHome(lambda: self.send_command('RESET'))
-        window.Buttons.setFunctionAuto(lambda: self.send_command('ESTOP'))
-        window.runUI() 
+        window.buttons.setFunctionSTART(lambda: self.send_command('START'))
+        window.buttons.setFunctionSTOP(lambda: self.send_command('STOP'))
+        window.show()
+        sys.exit(app.exec())
 
 
 def main():

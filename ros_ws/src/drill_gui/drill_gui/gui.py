@@ -1,93 +1,132 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QVBoxLayout, QComboBox
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSplitter, QStackedWidget, QLineEdit, QDialog, QDialogButtonBox
+from PyQt6.QtWidgets import (
+    QApplication, QWidget, QPushButton, QGridLayout,
+    QVBoxLayout, QHBoxLayout, QLabel, QFrame
+)
+
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
-import PyQt6.QtWidgets as QtW
 import sys
 
-#----------------------------------
-#These are the GUI buildinng classes
-class Buttons(QWidget):
+
+# ----------------------------------
+# Button Panel
+class ButtonPanel(QWidget):
+
     def __init__(self):
         super().__init__()
-        self.initUI()
 
-    def initUI(self):
         layout = QVBoxLayout()
-        
-        self.buttonHome = QPushButton("Home drill")
-        self.buttonAuto = QPushButton("Auto Drilling")
 
+        self.buttonHome = QPushButton("HOME DRILL")
+        self.buttonAuto = QPushButton("AUTO DRILL")
+        self.buttonStop = QPushButton("EMERGENCY STOP")
+        self.buttonWeight = QPushButton("WEIGH MATERIAL")
 
-        # Set colors of the buttons
-        self.buttonHome.setStyleSheet("background-color: black; color : white")
-        self.buttonAuto.setStyleSheet("background-color: green; color : white")
-        
+        buttons = [self.buttonHome, self.buttonAuto, self.buttonStop]
 
-        # Set the size of the buttons
-        self.buttonHome.setFixedHeight(50) 
-        self.buttonAuto.setFixedHeight(50)
-        
+        for b in buttons:
+            b.setMinimumHeight(60)
+            b.setFont(QFont("Arial", 16, QFont.Weight.Bold))
 
-        # Set the font size of the buttons
-        self.buttonHome.setFont(QFont("Arial", 20, QFont.Weight.Bold))
-        self.buttonAuto.setFont(QFont("Arial", 20, QFont.Weight.Bold))
+        self.buttonHome.setStyleSheet("background-color: black; color: white")
+        self.buttonAuto.setStyleSheet("background-color: green; color: white")
+        self.buttonStop.setStyleSheet("background-color: red; color: white")
 
-        # Connect buttons to functions (slots)
-        self.buttonHome.clicked.connect(self.home)
-        self.buttonAuto.clicked.connect(self.auto)
-        
         layout.addWidget(self.buttonHome)
         layout.addWidget(self.buttonAuto)
+        layout.addWidget(self.buttonStop)
+        layout.addStretch()
 
         self.setLayout(layout)
 
+        self.buttonHome.clicked.connect(self.home)
+        self.buttonAuto.clicked.connect(self.auto)
+        self.buttonStop.clicked.connect(self.stop)
+
     def home(self):
-        """Home button callback"""
-        print("Home button clicked")
-    
+        pass
+
     def auto(self):
-        """Auto button callback"""
-        print("Auto button clicked")
+        pass
 
-    def setFunctionHome(self, function):
-        self.buttonHome.clicked.connect(function)
+    def stop(self):
+        pass
 
-    def setFunctionAuto(self, function):
-        self.buttonAuto.clicked.connect(function)
+    def setFunctionHome(self, func):
+        self.buttonHome.clicked.disconnect()
+        self.buttonHome.clicked.connect(func)
 
+    def setFunctionAuto(self, func):
+        self.buttonAuto.clicked.disconnect()
+        self.buttonAuto.clicked.connect(func)
 
+    def setFunctionStop(self, func):
+        self.buttonStop.clicked.disconnect()
+        self.buttonStop.clicked.connect(func)
 
-#----------------------------------
-#Main class, this is what will be shown
-class MainWindow(QWidget):
-    app = QApplication(sys.argv)
-    def __init__(self, title = "Drill GUI by Hammer"):
+# ----------------------------------
+# Status Panel
+class StatusPanel(QWidget):
+
+    def __init__(self):
         super().__init__()
-        self.initUI()
-        self.setMinimumSize(730,420)
-        self.setWindowTitle(title)
 
-    def initUI(self):
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
-        #Create instances of classes
-        self.Buttons = Buttons()
+        title = QLabel("Drill Status")
+        title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        #Add stuff to our main widget
-        layout.addWidget(self.Buttons)
+        self.rpm = QLabel("RPM: 0")
+        self.torque = QLabel("Torque: 0 Nm")
+        self.temp = QLabel("Temperature: 0 C")
+        self.status = QLabel("System: Idle")
 
-        self.setLayout(layout)        
+        labels = [self.rpm, self.torque, self.temp, self.status]
 
-        
+        for l in labels:
+            l.setFont(QFont("Arial", 14))
+            l.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
+            l.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-    def runUI(self):
-        self.show()
-        self.app.exec()
+        layout.addWidget(title, 0, 0, 1, 2)
+
+        layout.addWidget(self.rpm, 1, 0)
+        layout.addWidget(self.torque, 1, 1)
+        layout.addWidget(self.temp, 2, 0)
+        layout.addWidget(self.status, 2, 1)
+
+        self.setLayout(layout)
 
 
-#----------------------------------
-# for testing gui appearance:
-if __name__ == '__main__':
+# ----------------------------------
+# Main Window
+class MainWindow(QWidget):
+
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Hammer Drill Control System")
+        self.setMinimumSize(900, 500)
+
+        mainLayout = QHBoxLayout()
+
+        self.buttons = ButtonPanel()
+        self.status = StatusPanel()
+
+        mainLayout.addWidget(self.buttons, 1)
+        mainLayout.addWidget(self.status, 2)
+
+        self.setLayout(mainLayout)
+
+
+# ----------------------------------
+# Run program
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+
     window = MainWindow()
-    #window.runUI() 
+    #window.show()
+
+    #sys.exit(app.exec())
