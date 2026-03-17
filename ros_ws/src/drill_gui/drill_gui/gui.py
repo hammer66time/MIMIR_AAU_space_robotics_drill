@@ -64,6 +64,19 @@ class ButtonPanel(QWidget):
         self.buttonStop.clicked.disconnect()
         self.buttonStop.clicked.connect(func)
 
+    # Backwards-compatible aliases used by caller code
+    def setFunctionSTART(self, func):
+        self.setFunctionAuto(func)
+
+    def setFunctionSTOP(self, func):
+        self.setFunctionStop(func)
+
+    def setFunctionHOME(self, func):
+        self.setFunctionHome(func)
+
+    def setFunctionAUTO(self, func):
+        self.setFunctionAuto(func)
+
 # ----------------------------------
 # Status Panel
 class StatusPanel(QWidget):
